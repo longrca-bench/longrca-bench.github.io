@@ -16,7 +16,7 @@
     "results"
   ],
   "properties": {
-    "schema_version": { "const": "1.2.0" },
+    "schema_version": { "const": "1.3.0" },
     "benchmark": { "const": "LongRCA Bench" },
     "evaluation_split": { "const": "public" },
     "generated_at": { "type": "string", "format": "date" },
@@ -82,6 +82,8 @@
       "required": [
         "id",
         "method",
+        "display_name",
+        "citation_label",
         "model",
         "provider",
         "n",
@@ -99,6 +101,8 @@
       "properties": {
         "id": { "type": "string", "pattern": "^[a-z0-9]+(?:-[a-z0-9]+)*$" },
         "method": { "type": "string", "minLength": 1 },
+        "display_name": { "type": "string", "minLength": 1 },
+        "citation_label": { "type": "string", "minLength": 1 },
         "model": { "const": "DeepSeek-V4-Flash" },
         "provider": { "type": "string", "minLength": 1, "pattern": "\\S" },
         "n": { "const": 1140 },

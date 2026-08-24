@@ -16,12 +16,14 @@ class FirstSliceTest(unittest.TestCase):
     def test_hero_stats_and_leaderboard_surface_exist(self) -> None:
         html = (REPO_ROOT / "index.html").read_text(encoding="utf-8")
         self.assertIn(
-            "Long-Horizon Root-Cause Localization.",
+            "Pinpointing Error Steps in Long-Horizon Agent Failures.",
             html,
         )
         self.assertIn(
-            "1,140 trajectories · 5 benchmarks · exact step localization.", html
+            "1,140 trajectories · 5 benchmarks · exact failure-step attribution.",
+            html,
         )
+        self.assertNotIn("Long-Horizon Root-Cause Localization.", html)
         self.assertNotIn("Diagnosing <em>who</em>", html)
         self.assertNotIn(">Who?<", html)
         self.assertNotIn(">When?<", html)
@@ -33,6 +35,19 @@ class FirstSliceTest(unittest.TestCase):
         self.assertIn('id="leaderboard-body"', html)
         self.assertIn('href="assets/styles.css"', html)
         self.assertIn('src="assets/app.js"', html)
+
+    def test_hero_dataset_action_uses_download_label(self) -> None:
+        html = (REPO_ROOT / "index.html").read_text(encoding="utf-8")
+        self.assertIn(
+            f'href="{PAPER_URL}"><img class="resource-icon" '
+            'src="assets/icons/arxiv.svg" alt="">Read the Paper</a>',
+            html,
+        )
+        self.assertIn(
+            f'href="{DATASET_URL}"><img class="resource-icon" '
+            'src="assets/icons/huggingface.svg" alt="">Download the Dataset</a>',
+            html,
+        )
 
     def test_hero_resource_links_have_local_icons(self) -> None:
         html = (REPO_ROOT / "index.html").read_text(encoding="utf-8")
@@ -77,10 +92,9 @@ class FirstSliceTest(unittest.TestCase):
             html,
         )
 
-    def test_leaderboard_is_model_first_and_step_exact_focused(self) -> None:
+    def test_leaderboard_is_method_first_and_step_exact_focused(self) -> None:
         html = (REPO_ROOT / "index.html").read_text(encoding="utf-8")
         headers = [
-            "Model",
             "Method",
             "Overall",
             "SWE-bench Pro",
@@ -92,9 +106,60 @@ class FirstSliceTest(unittest.TestCase):
         positions = [html.index(f">{header}<") for header in headers]
         self.assertEqual(sorted(positions), positions)
         table_head = html[html.index("<thead>") : html.index("</thead>")]
+        self.assertNotIn(">Model<", table_head)
         self.assertNotIn(">Role Acc.<", table_head)
         self.assertNotIn(">Root ±5<", table_head)
         self.assertNotIn(">Root MAE ↓<", table_head)
+
+    def test_leaderboard_uses_method_citations_and_equipped_model_subline(self) -> None:
+        payload = json.loads(
+            (REPO_ROOT / "data" / "leaderboard.json").read_text(encoding="utf-8")
+        )
+        expected = {
+            "RCTA": (
+                "RCTA",
+                "LongRCA",
+                "https://arxiv.org/abs/2608.15242",
+            ),
+            "ECHO": (
+                "ECHO",
+                "ECHO",
+                "https://arxiv.org/abs/2510.04886",
+            ),
+            "All-at-once": (
+                "LLM-as-a-Judge / All-at-once",
+                "Who&When",
+                "https://proceedings.mlr.press/v267/zhang25cq.html",
+            ),
+            "Step-by-step": (
+                "LLM-as-a-Judge / Step-by-step",
+                "Who&When",
+                "https://proceedings.mlr.press/v267/zhang25cq.html",
+            ),
+            "Binary search": (
+                "Binary search",
+                "Who&When",
+                "https://proceedings.mlr.press/v267/zhang25cq.html",
+            ),
+            "FALAT": (
+                "FALAT",
+                "FALAT",
+                "https://arxiv.org/abs/2606.00765",
+            ),
+        }
+        self.assertEqual(set(expected), {row["method"] for row in payload["results"]})
+        for row in payload["results"]:
+            with self.subTest(method=row["method"]):
+                display_name, citation_label, paper_url = expected[row["method"]]
+                self.assertEqual(display_name, row["display_name"])
+                self.assertEqual(citation_label, row["citation_label"])
+                self.assertEqual(paper_url, row["links"]["paper"])
+
+        script = (REPO_ROOT / "assets" / "app.js").read_text(encoding="utf-8")
+        self.assertIn("row.display_name", script)
+        self.assertIn("row.citation_label", script)
+        self.assertIn("Equipped with", script)
+        self.assertNotIn('class="model-cell"', script)
 
     def test_site_metadata_contains_approved_statistics(self) -> None:
         site = json.loads((REPO_ROOT / "data" / "site.json").read_text(encoding="utf-8"))

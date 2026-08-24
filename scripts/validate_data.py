@@ -30,6 +30,8 @@ REQUIRED_TOP_LEVEL = {
 REQUIRED_RESULT_FIELDS = {
     "id",
     "method",
+    "display_name",
+    "citation_label",
     "model",
     "provider",
     "n",
@@ -64,7 +66,7 @@ REQUIRED_PUBLIC_LINKS = {
     "https://arxiv.org/abs/2608.15242",
     "https://huggingface.co/datasets/CLoud5-real/longrca-bench",
 }
-REQUIRED_ANCHORS = {"overview", "leaderboard", "metrics", "contribute", "citation"}
+REQUIRED_ANCHORS = {"overview", "leaderboard", "contribute", "citation"}
 TEXT_SUFFIXES = {".css", ".html", ".js", ".json", ".md", ".py", ".txt", ".xml", ".yaml", ".yml"}
 
 CANONICAL_BENCHMARK_SLICES = [
@@ -74,6 +76,27 @@ CANONICAL_BENCHMARK_SLICES = [
     {"id": "vitabench", "label": "VitaBench", "n": 108},
     {"id": "webarena_verified", "label": "WebArena", "n": 177},
 ]
+
+CANONICAL_METHOD_PRESENTATION = {
+    "RCTA": ("RCTA", "LongRCA", "https://arxiv.org/abs/2608.15242"),
+    "ECHO": ("ECHO", "ECHO", "https://arxiv.org/abs/2510.04886"),
+    "All-at-once": (
+        "LLM-as-a-Judge / All-at-once",
+        "Who&When",
+        "https://proceedings.mlr.press/v267/zhang25cq.html",
+    ),
+    "Step-by-step": (
+        "LLM-as-a-Judge / Step-by-step",
+        "Who&When",
+        "https://proceedings.mlr.press/v267/zhang25cq.html",
+    ),
+    "Binary search": (
+        "Binary search",
+        "Who&When",
+        "https://proceedings.mlr.press/v267/zhang25cq.html",
+    ),
+    "FALAT": ("FALAT", "FALAT", "https://arxiv.org/abs/2606.00765"),
+}
 
 
 class SiteParser(HTMLParser):
@@ -145,8 +168,8 @@ def validate_leaderboard(payload: Any) -> None:
         raise ValueError(f"leaderboard is missing fields: {sorted(missing)}")
     _find_forbidden_fields(payload)
 
-    if payload["schema_version"] != "1.2.0":
-        raise ValueError("schema_version must be 1.2.0")
+    if payload["schema_version"] != "1.3.0":
+        raise ValueError("schema_version must be 1.3.0")
     if payload["benchmark"] != "LongRCA Bench":
         raise ValueError("benchmark must be LongRCA Bench")
     if payload["evaluation_split"] != "public":
@@ -195,6 +218,13 @@ def validate_leaderboard(payload: Any) -> None:
         if method in methods:
             raise ValueError(f"duplicate method: {method}")
         methods.add(method)
+        if method not in CANONICAL_METHOD_PRESENTATION:
+            raise ValueError(f"{result_id}: unknown canonical method")
+        display_name, citation_label, paper_url = CANONICAL_METHOD_PRESENTATION[method]
+        if row["display_name"] != display_name:
+            raise ValueError(f"{result_id}: display_name does not match method")
+        if row["citation_label"] != citation_label:
+            raise ValueError(f"{result_id}: citation_label does not match method")
         if row["model"] != "DeepSeek-V4-Flash":
             raise ValueError(f"{result_id}: model must be DeepSeek-V4-Flash")
         if not isinstance(row["provider"], str) or not row["provider"].strip():
@@ -254,6 +284,8 @@ def validate_leaderboard(payload: Any) -> None:
             raise ValueError(f"{result_id}: links must be a non-empty object")
         for link_name, link_url in links.items():
             require_https_url(link_url, label=f"{result_id}.links.{link_name}")
+        if links.get("paper") != paper_url:
+            raise ValueError(f"{result_id}: paper citation does not match method")
 
         scores.append(row["root_exact_correct"] / n)
 
@@ -294,6 +326,8 @@ def validate_site(root: Path) -> None:
     missing_anchors = REQUIRED_ANCHORS - parser.ids
     if missing_anchors:
         raise ValueError(f"index.html is missing anchors: {sorted(missing_anchors)}")
+    if "metrics" in parser.ids or "#metrics" in parser.hrefs:
+        raise ValueError("the removed metrics section must not be linked or rendered")
     for href in parser.hrefs:
         if href.startswith("#") and href[1:] not in parser.ids:
             raise ValueError(f"navigation target does not exist: {href}")

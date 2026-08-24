@@ -37,10 +37,21 @@ class CompleteSiteTest(unittest.TestCase):
         cls.parser.feed(cls.html)
 
     def test_all_sections_and_navigation_anchors_exist(self) -> None:
-        expected = {"overview", "leaderboard", "metrics", "contribute", "citation"}
+        expected = {"overview", "leaderboard", "contribute", "citation"}
         self.assertTrue(expected.issubset(self.parser.ids))
         for anchor in expected - {"overview"}:
             self.assertIn(f"#{anchor}", self.parser.hrefs)
+        self.assertNotIn("metrics", self.parser.ids)
+        self.assertNotIn("#metrics", self.parser.hrefs)
+
+    def test_leaderboard_copy_is_concise(self) -> None:
+        self.assertIn("LongRCA Bench Leaderboard", self.html)
+        self.assertNotIn("Exact-step leaderboard", self.html)
+        self.assertNotIn(
+            "One shared public evaluation set and one DeepSeek-V4-Flash backbone.",
+            self.html,
+        )
+        self.assertNotIn('class="notice"', self.html)
 
     def test_contribution_contract_is_visible(self) -> None:
         for token in (

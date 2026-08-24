@@ -104,6 +104,26 @@ class ExportPaperResultsTest(unittest.TestCase):
             "Binary search": (262, 39, 152, 61.7),
             "FALAT": (217, 32, 142, 66.6),
         }
+        expected_display = {
+            "RCTA": ("RCTA", "LongRCA", "https://arxiv.org/abs/2608.15242"),
+            "ECHO": ("ECHO", "ECHO", "https://arxiv.org/abs/2510.04886"),
+            "All-at-once": (
+                "LLM-as-a-Judge / All-at-once",
+                "Who&When",
+                "https://proceedings.mlr.press/v267/zhang25cq.html",
+            ),
+            "Step-by-step": (
+                "LLM-as-a-Judge / Step-by-step",
+                "Who&When",
+                "https://proceedings.mlr.press/v267/zhang25cq.html",
+            ),
+            "Binary search": (
+                "Binary search",
+                "Who&When",
+                "https://proceedings.mlr.press/v267/zhang25cq.html",
+            ),
+            "FALAT": ("FALAT", "FALAT", "https://arxiv.org/abs/2606.00765"),
+        }
         for row in results:
             role, exact, within_five, mae = expected[row["method"]]
             with self.subTest(method=row["method"]):
@@ -115,6 +135,10 @@ class ExportPaperResultsTest(unittest.TestCase):
                 self.assertEqual("DeepSeek-V4-Flash", row["model"])
                 self.assertEqual("DeepSeek", row["provider"])
                 self.assertEqual("Paper Result", row["status"])
+                display_name, citation_label, paper_url = expected_display[row["method"]]
+                self.assertEqual(display_name, row["display_name"])
+                self.assertEqual(citation_label, row["citation_label"])
+                self.assertEqual(paper_url, row["links"]["paper"])
 
         self.assertEqual(
             [

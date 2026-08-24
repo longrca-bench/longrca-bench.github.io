@@ -1,5 +1,5 @@
 {
-  "schema_version": "1.2.0",
+  "schema_version": "1.3.0",
   "benchmark": "LongRCA Bench",
   "evaluation_split": "public",
   "generated_at": "2026-08-20",
@@ -40,6 +40,8 @@
     {
       "id": "rcta-deepseek-v4-flash-paper",
       "method": "RCTA",
+      "display_name": "RCTA",
+      "citation_label": "LongRCA",
       "model": "DeepSeek-V4-Flash",
       "provider": "DeepSeek",
       "n": 1140,
@@ -80,6 +82,8 @@
     {
       "id": "echo-deepseek-v4-flash-paper",
       "method": "ECHO",
+      "display_name": "ECHO",
+      "citation_label": "ECHO",
       "model": "DeepSeek-V4-Flash",
       "provider": "DeepSeek",
       "n": 1140,
@@ -114,12 +118,14 @@
       "date": "2026-08-20",
       "status": "Paper Result",
       "links": {
-        "paper": "https://arxiv.org/abs/2608.15242"
+        "paper": "https://arxiv.org/abs/2510.04886"
       }
     },
     {
       "id": "all-at-once-deepseek-v4-flash-paper",
       "method": "All-at-once",
+      "display_name": "LLM-as-a-Judge / All-at-once",
+      "citation_label": "Who&When",
       "model": "DeepSeek-V4-Flash",
       "provider": "DeepSeek",
       "n": 1140,
@@ -154,12 +160,14 @@
       "date": "2026-08-20",
       "status": "Paper Result",
       "links": {
-        "paper": "https://arxiv.org/abs/2608.15242"
+        "paper": "https://proceedings.mlr.press/v267/zhang25cq.html"
       }
     },
     {
       "id": "step-by-step-deepseek-v4-flash-paper",
       "method": "Step-by-step",
+      "display_name": "LLM-as-a-Judge / Step-by-step",
+      "citation_label": "Who&When",
       "model": "DeepSeek-V4-Flash",
       "provider": "DeepSeek",
       "n": 1140,
@@ -194,12 +202,14 @@
       "date": "2026-08-20",
       "status": "Paper Result",
       "links": {
-        "paper": "https://arxiv.org/abs/2608.15242"
+        "paper": "https://proceedings.mlr.press/v267/zhang25cq.html"
       }
     },
     {
       "id": "binary-search-deepseek-v4-flash-paper",
       "method": "Binary search",
+      "display_name": "Binary search",
+      "citation_label": "Who&When",
       "model": "DeepSeek-V4-Flash",
       "provider": "DeepSeek",
       "n": 1140,
@@ -234,12 +244,14 @@
       "date": "2026-08-20",
       "status": "Paper Result",
       "links": {
-        "paper": "https://arxiv.org/abs/2608.15242"
+        "paper": "https://proceedings.mlr.press/v267/zhang25cq.html"
       }
     },
     {
       "id": "falat-deepseek-v4-flash-paper",
       "method": "FALAT",
+      "display_name": "FALAT",
+      "citation_label": "FALAT",
       "model": "DeepSeek-V4-Flash",
       "provider": "DeepSeek",
       "n": 1140,
@@ -274,7 +286,7 @@
       "date": "2026-08-20",
       "status": "Paper Result",
       "links": {
-        "paper": "https://arxiv.org/abs/2608.15242"
+        "paper": "https://arxiv.org/abs/2606.00765"
       }
     }
   ]

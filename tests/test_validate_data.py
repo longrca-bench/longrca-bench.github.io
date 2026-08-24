@@ -71,6 +71,18 @@ class ValidateDataTest(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "provider must be non-empty"):
             validator.validate_leaderboard(payload)
 
+    def test_missing_citation_metadata_is_rejected(self) -> None:
+        payload = copy.deepcopy(self.payload)
+        payload["results"][0].pop("citation_label", None)
+        with self.assertRaisesRegex(ValueError, "citation_label"):
+            validator.validate_leaderboard(payload)
+
+    def test_noncanonical_method_paper_link_is_rejected(self) -> None:
+        payload = copy.deepcopy(self.payload)
+        payload["results"][1]["links"]["paper"] = payload["paper_url"]
+        with self.assertRaisesRegex(ValueError, "paper citation"):
+            validator.validate_leaderboard(payload)
+
     def test_benchmark_slice_total_mismatch_is_rejected(self) -> None:
         payload = copy.deepcopy(self.payload)
         payload["results"][0]["by_benchmark"]["swe_bench_pro"]["n"] = 127

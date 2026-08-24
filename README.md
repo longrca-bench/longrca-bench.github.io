@@ -11,9 +11,9 @@ The first release presents the six paper results on 1,140 public trajectories ac
 
 ## Data model
 
-`data/leaderboard.json` is the only source used to render leaderboard rows. The primary table ranks by overall exact root-cause step accuracy and shows the corresponding exact-step result for SWE-bench Pro, Terminal-Bench 2, TravelPlanner, VitaBench, and WebArena. It stores exact counts and denominators—including each `by_benchmark` slice—instead of duplicated percentages, so the browser computes every displayed value directly from versioned counts.
+`data/leaderboard.json` is the only source used to render leaderboard rows. The primary table ranks by overall exact error-step accuracy and shows the corresponding exact-step result for SWE-bench Pro, Terminal-Bench 2, TravelPlanner, VitaBench, and WebArena. It stores exact counts and denominators—including each `by_benchmark` slice—instead of duplicated percentages, so the browser computes every displayed value directly from versioned counts.
 
-Each row records `model` and `provider` separately so the leaderboard can display model provenance without inferring it from a model name.
+Each row keeps a canonical `method`, a presentation-oriented `display_name`, a short `citation_label`, and an independently linked method paper. The equipped LLM remains versioned in `model` and `provider`, but is rendered as supporting metadata beneath the method rather than as the primary leaderboard identity.
 
 Responsible-role accuracy, root ±5 accuracy, MAE, coverage, and failure counts remain in the same JSON record as complementary diagnostics even though they are not shown in the primary table.
 

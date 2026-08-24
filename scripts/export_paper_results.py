@@ -33,6 +33,33 @@ METHOD_LABELS = {
     "agent_error_trajectory_analysis": "RCTA",
 }
 
+METHOD_DISPLAY_NAMES = {
+    "full_all_at_once": "LLM-as-a-Judge / All-at-once",
+    "full_step_by_step": "LLM-as-a-Judge / Step-by-step",
+    "full_binary_search": "Binary search",
+    "full_echo": "ECHO",
+    "falat": "FALAT",
+    "agent_error_trajectory_analysis": "RCTA",
+}
+
+METHOD_CITATIONS = {
+    "full_all_at_once": (
+        "Who&When",
+        "https://proceedings.mlr.press/v267/zhang25cq.html",
+    ),
+    "full_step_by_step": (
+        "Who&When",
+        "https://proceedings.mlr.press/v267/zhang25cq.html",
+    ),
+    "full_binary_search": (
+        "Who&When",
+        "https://proceedings.mlr.press/v267/zhang25cq.html",
+    ),
+    "full_echo": ("ECHO", "https://arxiv.org/abs/2510.04886"),
+    "falat": ("FALAT", "https://arxiv.org/abs/2606.00765"),
+    "agent_error_trajectory_analysis": ("LongRCA", PAPER_URL),
+}
+
 # The paper-reported MAE values are pinned because failed predictions have no
 # serialized ``step_abs_err`` in records.tsv. Counts and all percentage metrics
 # are recomputed from records; these six MAEs preserve the published contract.
@@ -206,6 +233,10 @@ def build_leaderboard(
         method_label = METHOD_LABELS.get(
             method_id, method_rows[0].get("method_label") or method_id
         )
+        display_name = METHOD_DISPLAY_NAMES.get(method_id, method_label)
+        citation_label, citation_url = METHOD_CITATIONS.get(
+            method_id, ("Paper", PAPER_URL)
+        )
         root_mae = (
             PAPER_ROOT_MAE[method_id]
             if expected_n == 1140 and method_id in PAPER_ROOT_MAE
@@ -228,6 +259,8 @@ def build_leaderboard(
             {
                 "id": f"{slugify(method_label)}-deepseek-v4-flash-paper",
                 "method": method_label,
+                "display_name": display_name,
+                "citation_label": citation_label,
                 "model": MODEL_NAME,
                 "provider": PROVIDER_NAME,
                 "n": n,
@@ -240,7 +273,7 @@ def build_leaderboard(
                 "by_benchmark": by_benchmark,
                 "date": paper_date,
                 "status": "Paper Result",
-                "links": {"paper": PAPER_URL},
+                "links": {"paper": citation_url},
             }
         )
 
@@ -252,7 +285,7 @@ def build_leaderboard(
         )
     )
     return {
-        "schema_version": "1.2.0",
+        "schema_version": "1.3.0",
         "benchmark": "LongRCA Bench",
         "evaluation_split": "public",
         "generated_at": paper_date,

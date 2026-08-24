@@ -41,12 +41,12 @@ const renderLeaderboard = (payload) => {
       return `
         <tr class="${index === 0 ? "leader" : ""}">
           <td><span class="rank">${index + 1}</span></td>
-          <td class="model-cell">
-            <span class="model-name">${escapeHtml(row.model)}</span>
-            <span class="model-provider">Provider · ${escapeHtml(row.provider)}</span>
-          </td>
-          <td>
-            <a class="method-link" href="${escapeHtml(paperUrl)}">${escapeHtml(row.method)} <span aria-hidden="true">↗</span></a>
+          <td class="method-cell">
+            <div class="method-line">
+              <span class="method-name">${escapeHtml(row.display_name)}</span>
+              <a class="method-citation" href="${escapeHtml(paperUrl)}" aria-label="Read the ${escapeHtml(row.citation_label)} paper">[${escapeHtml(row.citation_label)}]</a>
+            </div>
+            <span class="model-backbone">(Equipped with ${escapeHtml(row.model)})</span>
             <span class="sample-count">n = ${row.n.toLocaleString("en-US")}</span>
           </td>
           <td class="number primary-metric"><strong>${formatPercent(row.root_exact_correct, row.n)}</strong></td>
@@ -58,7 +58,7 @@ const renderLeaderboard = (payload) => {
 
 const renderFailure = () => {
   const body = document.querySelector("#leaderboard-body");
-  body.innerHTML = '<tr><td colspan="9" class="loading error">Leaderboard data could not be loaded.</td></tr>';
+  body.innerHTML = '<tr><td colspan="8" class="loading error">Leaderboard data could not be loaded.</td></tr>';
 };
 
 const loadData = async () => {
