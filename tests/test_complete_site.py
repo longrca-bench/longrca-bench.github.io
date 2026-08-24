@@ -97,6 +97,15 @@ class CompleteSiteTest(unittest.TestCase):
         )
         self.assertNotIn('class="notice"', self.html)
 
+    def test_leaderboard_heading_is_kept_on_one_line(self) -> None:
+        styles = (REPO_ROOT / "assets" / "styles.css").read_text(encoding="utf-8")
+        rule = re.search(
+            r"\.leaderboard-section \.section-heading h2\s*\{([^}]+)\}",
+            styles,
+        )
+        self.assertIsNotNone(rule)
+        self.assertIn("white-space: nowrap", rule.group(1))
+
     def test_contribution_contract_is_visible(self) -> None:
         for token in (
             "metadata.json",

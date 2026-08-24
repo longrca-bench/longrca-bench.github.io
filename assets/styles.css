@@ -210,6 +210,7 @@ h1 em { color: #8ee6d4; font-weight: 500; }
 .section-heading { display: grid; grid-template-columns: 1fr minmax(310px, .72fr); gap: 56px; align-items: end; margin-bottom: 28px; }
 .section-index { margin-bottom: 8px; color: var(--teal); }
 .section-heading h2 { margin-bottom: 0; font: 500 clamp(2.2rem, 4vw, 3.6rem)/1.05 Georgia, serif; letter-spacing: -.04em; }
+.leaderboard-section .section-heading h2 { font-size: clamp(1.32rem, 3.5vw, 3.15rem); white-space: nowrap; }
 .section-heading > p { margin-bottom: 4px; color: var(--muted); font-size: .92rem; }
 
 .table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: white; box-shadow: 0 15px 38px rgba(20,35,58,.08); }
