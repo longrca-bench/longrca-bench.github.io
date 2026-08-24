@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import copy
 import json
 import sys
 import unittest
@@ -32,7 +31,8 @@ class ExampleTrajectoryTest(unittest.TestCase):
         self.assertEqual(8, len(payload["actors"]))
         self.assertEqual(77, len(payload["events"]))
         self.assertEqual(list(range(77)), [event["index"] for event in payload["events"]])
-        self.assertEqual([24, 51, 69, 74], [item["step"] for item in payload["failure_path"]])
+        self.assertNotIn("failure_path", payload)
+        self.assertNotIn("final_failure", payload)
 
         final_error = payload["events"][74]
         self.assertEqual("writer", final_error["actor"])
@@ -61,12 +61,16 @@ class ExampleTrajectoryTest(unittest.TestCase):
             validator.validate_example_trajectory(payload)
 
     @unittest.skipUnless(DATA_PATH.is_file(), "example trajectory is not implemented yet")
-    def test_failure_path_contract_is_fixed_to_source_events(self) -> None:
+    def test_source_event_taxonomy_and_blackboard_totals_are_preserved(self) -> None:
         payload = json.loads(DATA_PATH.read_text(encoding="utf-8"))
-        broken = copy.deepcopy(payload)
-        broken["failure_path"][0]["step"] = 23
-        with self.assertRaisesRegex(ValueError, "failure path"):
-            validator.validate_example_trajectory(broken)
+        kinds = {event["kind"] for event in payload["events"]}
+        self.assertTrue({"handoff", "tool", "verify", "error", "final"}.issubset(kinds))
+        self.assertEqual(
+            {"candidates": 23, "checks": 8, "notes": 4},
+            payload["events"][-1]["state"],
+        )
+        self.assertEqual("error", payload["events"][55]["kind"])
+        self.assertIn("parse", payload["events"][55]["detail"].casefold())
 
 
 if __name__ == "__main__":

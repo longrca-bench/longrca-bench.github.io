@@ -108,7 +108,6 @@ CANONICAL_EXAMPLE_ACTORS = [
     "manager",
     "writer",
 ]
-CANONICAL_FAILURE_PATH = [24, 51, 69, 74]
 FORBIDDEN_EXAMPLE_FIELDS = {"gold_root_step", "root_step", "responsible_role"}
 
 
@@ -342,8 +341,6 @@ def validate_example_trajectory(payload: Any) -> None:
         "actors",
         "phases",
         "events",
-        "failure_path",
-        "final_failure",
     }
     missing = required - set(payload)
     if missing:
@@ -402,12 +399,14 @@ def validate_example_trajectory(payload: Any) -> None:
             raise ValueError("example cumulative state must be non-decreasing integers")
         previous_state = state
 
-    failure_path = payload["failure_path"]
-    if not isinstance(failure_path, list) or [item.get("step") for item in failure_path] != CANONICAL_FAILURE_PATH:
-        raise ValueError("example failure path must match source events 24, 51, 69, and 74")
-    for item in failure_path:
-        if set(item) != {"step", "label", "detail"}:
-            raise ValueError("example failure path entries must contain step, label, and detail")
+    required_kinds = {"handoff", "tool", "verify", "error", "final"}
+    if not required_kinds.issubset({event["kind"] for event in events}):
+        raise ValueError("example events must preserve the source event taxonomy")
+    if events[-1]["state"] != {"candidates": 23, "checks": 8, "notes": 4}:
+        raise ValueError("example must preserve the final blackboard totals")
+    tool_error = events[55]
+    if tool_error["kind"] != "error" or "parse" not in tool_error["detail"].casefold():
+        raise ValueError("example must preserve the step 55 tool error")
     final_error = events[74]
     if final_error["actor"] != "writer" or final_error["tone"] != "error" or "caveat" not in final_error["detail"].casefold():
         raise ValueError("example final failure must remain the writer caveat omission at step 74")

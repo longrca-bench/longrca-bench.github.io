@@ -52,18 +52,41 @@ class CompleteSiteTest(unittest.TestCase):
         self.assertLess(leaderboard, example)
         self.assertLess(example, contribute)
         self.assertIn("An Example of a Failed Task Trajectory", self.html)
-        self.assertIn("Agent status", self.html)
-        self.assertIn("Benchmark outcome", self.html)
         self.assertIn('id="trajectory-example"', self.html)
         self.assertIn('src="assets/trajectory.js"', self.html)
         self.assertNotIn("<iframe", self.html)
 
-    def test_example_exposes_three_accessible_views(self) -> None:
-        for view in ("map", "failure", "result"):
+    def test_example_exposes_all_four_source_views(self) -> None:
+        for view in ("map", "events", "blackboard", "result"):
             self.assertIn(f'data-trace-tab="{view}"', self.html)
             self.assertIn(f'data-trace-view="{view}"', self.html)
+        self.assertNotIn('data-trace-tab="failure"', self.html)
+        self.assertNotIn('data-trace-view="failure"', self.html)
         self.assertIn('aria-label="Play trajectory"', self.html)
         self.assertIn('aria-label="Trajectory step"', self.html)
+
+    def test_example_preserves_source_visualization_modules(self) -> None:
+        for token in (
+            "End-to-End Multi-Agent Execution Trace",
+            "23 / 8 / 4",
+            "1 rework loop",
+            "Message flow across agent lanes",
+            "Dispatch",
+            "Tool call",
+            "Verification",
+            "Error / fail",
+            "Completion",
+            "Stage-level payloads and returns",
+            "Figure 1. End-to-end execution of TravelPlanner query 44.",
+            "All 77 steps",
+            "Blackboard growth by message step",
+            "Final candidate inventory",
+            "Critical correction loop",
+            "Verification conclusion",
+            "Budget allocation",
+            "1 Bedroom in UWS Manhattan",
+        ):
+            self.assertIn(token, self.html)
 
     def test_leaderboard_copy_is_concise(self) -> None:
         self.assertIn("LongRCA Bench Leaderboard", self.html)

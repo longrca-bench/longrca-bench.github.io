@@ -1179,32 +1179,5 @@
         "notes": 4
       }
     }
-  ],
-  "failure_path": [
-    {
-      "step": 24,
-      "label": "Incorrect stay accepted",
-      "detail": "The stay summary provisionally recommends a UWS Manhattan listing using the tool city field Newark."
-    },
-    {
-      "step": 51,
-      "label": "Verifier exposes the mismatch",
-      "detail": "The verifier recognizes that the shortlisted stays are actually in Manhattan or Brooklyn."
-    },
-    {
-      "step": 69,
-      "label": "Exception approved with a condition",
-      "detail": "The fallback is approved only if the final answer explicitly states the Manhattan location and PATH commute caveat."
-    },
-    {
-      "step": 74,
-      "label": "Writer drops the condition",
-      "detail": "The final itinerary omits the approved caveat and still presents the Manhattan stay as Newark."
-    }
-  ],
-  "final_failure": {
-    "manager_requirement": "Use the UWS Manhattan fallback only with an explicit Manhattan location and PATH commute caveat.",
-    "observed_output": "The Writer labels “1 Bedroom in UWS Manhattan” as Newark and omits the required caveat.",
-    "explanation": "The completion token reflects orchestration status, not task correctness. The final answer violates the approved location condition, so the benchmark outcome is failed."
-  }
+  ]
 }

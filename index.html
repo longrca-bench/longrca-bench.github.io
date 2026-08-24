@@ -111,33 +111,36 @@
             <header class="trajectory-header">
               <div>
                 <span class="case-kicker">TravelPlanner · Query 44</span>
-                <h3 id="trajectory-example-title">Scranton <span aria-hidden="true">→</span> Newark</h3>
-                <p>Mar 24–26, 2022 · 1 traveler · $1,600 budget</p>
+                <h3 id="trajectory-example-title">End-to-End Multi-Agent Execution Trace</h3>
+                <p class="trajectory-route"><strong>Scranton</strong><span aria-hidden="true">→</span><strong>Newark</strong><span>Mar 24–26, 2022</span><span>1 traveler</span><span>$1,600 budget</span></p>
               </div>
-              <div class="outcome-contrast" aria-label="Agent and benchmark outcomes">
-                <div><span>Agent status</span><strong>TASK_COMPLETE</strong></div>
-                <div class="failed-outcome"><span>Benchmark outcome</span><strong>FAILED</strong></div>
-              </div>
+              <span class="status-badge">TASK_COMPLETE</span>
             </header>
 
             <div class="trajectory-metrics" aria-label="Trajectory summary">
               <div><strong>77</strong><span>message steps</span></div>
-              <div><strong>8</strong><span>agent roles</span></div>
               <div><strong>48</strong><span>tool requests</span></div>
-              <div><strong>Step 74</strong><span>failure exposed</span></div>
+              <div><strong>23 / 8 / 4</strong><span>candidates / checks / notes</span></div>
+              <div><strong>1 rework loop</strong><span>lodging city mismatch</span></div>
             </div>
 
             <div class="trajectory-tabs" role="tablist" aria-label="Trajectory views">
-              <button type="button" role="tab" aria-selected="true" aria-controls="trajectory-map" data-trace-tab="map">Execution Map</button>
-              <button type="button" role="tab" aria-selected="false" aria-controls="trajectory-failure" data-trace-tab="failure">Failure Path</button>
-              <button type="button" role="tab" aria-selected="false" aria-controls="trajectory-result" data-trace-tab="result">Final Output</button>
+              <button type="button" role="tab" aria-selected="true" aria-controls="trajectory-map" data-trace-tab="map">Execution map</button>
+              <button type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="trajectory-events" data-trace-tab="events">All 77 steps</button>
+              <button type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="trajectory-blackboard" data-trace-tab="blackboard">Blackboard growth</button>
+              <button type="button" role="tab" tabindex="-1" aria-selected="false" aria-controls="trajectory-result" data-trace-tab="result">Final output</button>
             </div>
 
             <section class="trajectory-view" id="trajectory-map" role="tabpanel" data-trace-view="map">
-              <div class="trajectory-legend" aria-label="Event legend">
-                <span><i class="legend-dot normal-dot"></i>Agent step</span>
-                <span><i class="legend-dot failure-dot"></i>Failure-relevant step</span>
-                <span><i class="legend-dot error-dot"></i>Error exposed</span>
+              <div class="trajectory-view-heading">
+                <h4>Message flow across agent lanes</h4>
+                <div class="trajectory-legend" aria-label="Event mark legend">
+                  <span><i class="event-mark dispatch-mark"></i>Dispatch</span>
+                  <span><i class="event-mark tool-mark"></i>Tool call</span>
+                  <span><i class="event-mark verification-mark"></i>Verification</span>
+                  <span><i class="event-mark error-mark"></i>Error / fail</span>
+                  <span><i class="event-mark completion-mark"></i>Completion</span>
+                </div>
               </div>
               <div class="trajectory-map-wrap">
                 <svg class="trajectory-map" data-trajectory-map role="img" aria-label="Interactive 77-step multi-agent execution map"></svg>
@@ -162,25 +165,110 @@
                   <div><dt>Notes</dt><dd data-trace-notes>0</dd></div>
                 </dl>
               </div>
+
+              <div class="stage-ledger">
+                <h4>Stage-level payloads and returns</h4>
+                <div class="trajectory-table-wrap" tabindex="0" aria-label="Scrollable stage-level payload table">
+                  <table class="trajectory-table compact-table">
+                    <thead><tr><th>Stage</th><th>Dispatched payload</th><th>Returned evidence / decision</th><th>Blackboard delta</th></tr></thead>
+                    <tbody>
+                      <tr><td><span class="phase-index">P1</span>Plan</td><td>User query + grounding workflow</td><td>Facts, unknowns, agent assignments</td><td>—</td></tr>
+                      <tr><td><span class="phase-index">P2</span>Transport</td><td>Scranton → Newark; Mar 24 / 26; all modes</td><td>2 outbound + 1 return flights; taxi quote; no driving record</td><td>+4 candidates, +1 note</td></tr>
+                      <tr><td><span class="phase-index">P3</span>Stay shortlist</td><td>Newark; 1 traveler; 2 nights; remaining budget</td><td>15 records searched; 4 stored; UWS selected provisionally</td><td>+4 candidates, +1 note</td></tr>
+                      <tr><td><span class="phase-index">P4</span>Food + sights</td><td>Newark venues, ratings, prices, addresses</td><td>30 restaurants + 20 attractions; 12 strong candidates; $505 trip estimate</td><td>+12 candidates, +1 note</td></tr>
+                      <tr><td><span class="phase-index">P5</span>Verify</td><td>20 candidates + 3 notes + trip constraints</td><td>5 passes, 2 blocking failures, 1 malformed tool request</td><td>+7 check records</td></tr>
+                      <tr><td><span class="phase-index">P6</span>Stay rework</td><td>City mismatch + original 15 lodging records</td><td>0 genuine Newark stays; 3 NYC records relabeled with location caveats</td><td>+3 candidates, +1 note</td></tr>
+                      <tr><td><span class="phase-index">P7</span>Decision</td><td>Data limitation + $1,315 remaining budget</td><td>UWS approved with Manhattan / PATH caveat; TASK_COMPLETE emitted</td><td>+1 approval check</td></tr>
+                      <tr><td><span class="phase-index">P8</span>Writer</td><td>WriterPlan schema + full blackboard snapshot</td><td>3-day JSON itinerary; approved lodging caveat omitted</td><td>Final output</td></tr>
+                    </tbody>
+                  </table>
+                </div>
+                <p class="trajectory-caption">Figure 1. End-to-end execution of TravelPlanner query 44. Each mark is one trace message; vertical movement denotes agent handoff, while the stage ledger records the payload sent and the evidence returned.</p>
+              </div>
             </section>
 
-            <section class="trajectory-view" id="trajectory-failure" role="tabpanel" data-trace-view="failure" hidden>
-              <div class="failure-path" data-failure-path></div>
-              <p class="trajectory-note">These are failure-relevant events from the supplied trace, not a published gold root-step annotation.</p>
+            <section class="trajectory-view" id="trajectory-events" role="tabpanel" data-trace-view="events" hidden>
+              <div class="trajectory-table-wrap" tabindex="0" aria-label="Scrollable table of all 77 trajectory steps">
+                <table class="trajectory-table event-table">
+                  <thead><tr><th class="number">Step</th><th>Actor</th><th>Type</th><th>Action</th><th>Stage</th></tr></thead>
+                  <tbody data-event-table></tbody>
+                </table>
+              </div>
+            </section>
+
+            <section class="trajectory-view" id="trajectory-blackboard" role="tabpanel" data-trace-view="blackboard" hidden>
+              <div class="blackboard-layout">
+                <div>
+                  <h4>Blackboard growth by message step</h4>
+                  <div class="state-legend" aria-label="Data series">
+                    <button type="button" aria-pressed="true" data-state-series="candidates"><i class="series-swatch candidates-swatch"></i>Candidates</button>
+                    <button type="button" aria-pressed="true" data-state-series="checks"><i class="series-swatch checks-swatch"></i>Check records</button>
+                    <button type="button" aria-pressed="true" data-state-series="notes"><i class="series-swatch notes-swatch"></i>Notes</button>
+                  </div>
+                  <div class="state-chart-wrap">
+                    <svg class="state-chart" data-state-chart role="img" aria-label="Cumulative blackboard records across 77 message steps"></svg>
+                    <div class="state-tooltip" data-state-tooltip role="tooltip" hidden></div>
+                  </div>
+                </div>
+                <div class="inventory-panel">
+                  <h4>Final candidate inventory</h4>
+                  <div class="inventory-row"><span>Transport</span><div><i style="width:57.14%"></i></div><strong>4</strong></div>
+                  <div class="inventory-row"><span>Stay records</span><div><i style="width:100%"></i></div><strong>7</strong></div>
+                  <div class="inventory-row"><span>Restaurants</span><div><i style="width:85.71%"></i></div><strong>6</strong></div>
+                  <div class="inventory-row"><span>Attractions</span><div><i style="width:85.71%"></i></div><strong>6</strong></div>
+                  <p>The 7 stay records include 4 initial candidates and 3 location-corrected records added during rework.</p>
+                </div>
+              </div>
+
+              <h4>Critical correction loop</h4>
+              <ol class="correction-loop">
+                <li><strong>Initial shortlist</strong><span>15 records labeled Newark</span></li>
+                <li><strong>Verifier intercept</strong><span>Names expose Manhattan / Brooklyn</span></li>
+                <li><strong>Tool error</strong><span>Step 55 JSON payload fails to parse</span></li>
+                <li><strong>Second search</strong><span>0 genuine Newark stays</span></li>
+                <li><strong>Manager decision</strong><span>Accept UWS with an explicit caveat</span></li>
+              </ol>
+
+              <div class="trajectory-table-wrap" tabindex="0" aria-label="Scrollable verification conclusions table">
+                <table class="trajectory-table compact-table verification-table">
+                  <thead><tr><th>Verification conclusion</th><th>Status</th><th>Effect</th></tr></thead>
+                  <tbody>
+                    <tr><td>Transport dates and prices</td><td><span class="pass-status">Pass</span></td><td>$51–55 round-trip flights; $358 round-trip taxi</td></tr>
+                    <tr><td>Stay occupancy and nights</td><td><span class="pass-status">Pass</span></td><td>1 traveler, 2 nights</td></tr>
+                    <tr><td>Stay city consistency</td><td><span class="fail-status">Fail</span></td><td>Candidates are actually in New York City</td></tr>
+                    <tr><td>Restaurant and attraction city</td><td><span class="pass-status">Pass</span></td><td>6 restaurants and 6 attractions are in Newark</td></tr>
+                    <tr><td>Budget calculation</td><td><span class="pass-status">Pass</span></td><td>$505 estimated; $1,095 remaining</td></tr>
+                    <tr><td>Local constraints</td><td><span class="pass-status">Pass</span></td><td>All constraints are null</td></tr>
+                    <tr><td>Initial overall readiness</td><td><span class="fail-status">Fail</span></td><td>Triggers stay rework</td></tr>
+                    <tr><td>Stay-location exception approval</td><td><span class="pass-status">Pass</span></td><td>Accept UWS Manhattan with a PATH caveat</td></tr>
+                  </tbody>
+                </table>
+              </div>
             </section>
 
             <section class="trajectory-view" id="trajectory-result" role="tabpanel" data-trace-view="result" hidden>
-              <div class="result-comparison">
-                <div>
-                  <span class="comparison-label">Required by Manager</span>
-                  <p data-manager-requirement>Loading requirement…</p>
-                </div>
-                <div class="observed-failure">
-                  <span class="comparison-label">Returned by Writer</span>
-                  <p data-observed-failure>Loading final output…</p>
-                </div>
+              <h4>Budget allocation</h4>
+              <div class="budget-bar" role="img" aria-label="Total budget 1600 dollars: transport 51, stay 234, food 180, attractions 40, remaining 1095">
+                <i class="budget-transport" style="width:3.1875%"></i><i class="budget-stay" style="width:14.625%"></i><i class="budget-food" style="width:11.25%"></i><i class="budget-attractions" style="width:2.5%"></i><i class="budget-remaining" style="width:68.4375%"></i>
               </div>
-              <div class="failure-callout"><strong>Why the task failed</strong><p data-failure-explanation></p></div>
+              <div class="budget-legend">
+                <span><i class="budget-transport"></i>Transport <strong>$51</strong></span>
+                <span><i class="budget-stay"></i>Stay <strong>$234</strong></span>
+                <span><i class="budget-food"></i>Food <strong>$180</strong></span>
+                <span><i class="budget-attractions"></i>Attractions <strong>$40</strong></span>
+                <span><i class="budget-remaining"></i>Remaining <strong>$1,095</strong></span>
+              </div>
+              <div class="trajectory-table-wrap" tabindex="0" aria-label="Scrollable final itinerary table">
+                <table class="trajectory-table itinerary-table">
+                  <thead><tr><th>Date</th><th>Transport</th><th>Meals</th><th>Attractions</th><th>Stay</th></tr></thead>
+                  <tbody>
+                    <tr><td>03-24</td><td>F3920949<br><span>13:40–14:46</span></td><td>Drifters Cafe<br>Mogambo Khush Hua</td><td>Branch Brook Park</td><td>1 Bedroom in UWS Manhattan</td></tr>
+                    <tr><td>03-25</td><td>–</td><td>Drifters Cafe<br>Angeethi Restaurant<br>Bernardo's</td><td>Newark Museum of Art<br>Dreyfuss Planetarium<br>Military Park</td><td>1 Bedroom in UWS Manhattan</td></tr>
+                    <tr><td>03-26</td><td>F3919859<br><span>21:46–22:23</span></td><td>Tunday Kababi<br>Artistry</td><td>New Jersey Historical Society<br>Newark Riverfront Park</td><td>–</td></tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="risk-line"><span aria-hidden="true">!</span><p>The final JSON still labels “1 Bedroom in UWS Manhattan” as Newark and drops the Manhattan / PATH caveat required by the Manager.</p></div>
             </section>
 
             <p class="trajectory-load-error" data-trajectory-error hidden>Example trajectory could not be loaded.</p>
