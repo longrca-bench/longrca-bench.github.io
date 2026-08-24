@@ -66,7 +66,7 @@ REQUIRED_PUBLIC_LINKS = {
     "https://arxiv.org/abs/2608.15242",
     "https://huggingface.co/datasets/CLoud5-real/longrca-bench",
 }
-REQUIRED_ANCHORS = {"overview", "leaderboard", "contribute", "citation"}
+REQUIRED_ANCHORS = {"overview", "leaderboard", "example", "contribute", "citation"}
 TEXT_SUFFIXES = {".css", ".html", ".js", ".json", ".md", ".py", ".txt", ".xml", ".yaml", ".yml"}
 
 CANONICAL_BENCHMARK_SLICES = [
@@ -97,6 +97,19 @@ CANONICAL_METHOD_PRESENTATION = {
     ),
     "FALAT": ("FALAT", "FALAT", "https://arxiv.org/abs/2606.00765"),
 }
+
+CANONICAL_EXAMPLE_ACTORS = [
+    "system",
+    "planner",
+    "transport",
+    "stay",
+    "food",
+    "verifier",
+    "manager",
+    "writer",
+]
+CANONICAL_FAILURE_PATH = [24, 51, 69, 74]
+FORBIDDEN_EXAMPLE_FIELDS = {"gold_root_step", "root_step", "responsible_role"}
 
 
 class SiteParser(HTMLParser):
@@ -309,6 +322,97 @@ def validate_exporter_contract(exporter_path: Path) -> None:
             raise ValueError(f"exporter must explicitly score {required_key}")
 
 
+def validate_example_trajectory(payload: Any) -> None:
+    if not isinstance(payload, dict):
+        raise ValueError("example trajectory must be a JSON object")
+    forbidden = FORBIDDEN_EXAMPLE_FIELDS & set(payload)
+    if forbidden:
+        raise ValueError("example trajectory must not claim a gold root or role label")
+
+    required = {
+        "schema_version",
+        "id",
+        "benchmark",
+        "title",
+        "route",
+        "task",
+        "agent_status",
+        "outcome",
+        "summary",
+        "actors",
+        "phases",
+        "events",
+        "failure_path",
+        "final_failure",
+    }
+    missing = required - set(payload)
+    if missing:
+        raise ValueError(f"example trajectory missing fields: {sorted(missing)}")
+    if payload["schema_version"] != "1.0.0":
+        raise ValueError("example trajectory schema_version must be 1.0.0")
+    if payload["benchmark"] != "TravelPlanner":
+        raise ValueError("example trajectory benchmark must be TravelPlanner")
+    if payload["agent_status"] != "TASK_COMPLETE" or payload["outcome"] != "Failed":
+        raise ValueError("example must distinguish TASK_COMPLETE from the failed outcome")
+
+    actors = payload["actors"]
+    if not isinstance(actors, list) or [item.get("id") for item in actors] != CANONICAL_EXAMPLE_ACTORS:
+        raise ValueError("example trajectory must contain the eight canonical actors")
+    if any(not isinstance(item.get("label"), str) or not item["label"].strip() for item in actors):
+        raise ValueError("example actor labels must be non-empty")
+    actor_ids = set(CANONICAL_EXAMPLE_ACTORS)
+
+    phases = payload["phases"]
+    if not isinstance(phases, list) or len(phases) != 8:
+        raise ValueError("example trajectory must contain eight phases")
+    expected_start = 0
+    phase_ids: set[str] = set()
+    for phase in phases:
+        if set(phase) != {"id", "label", "start", "end"}:
+            raise ValueError("example phase fields must be id, label, start, and end")
+        if phase["start"] != expected_start or phase["end"] < phase["start"]:
+            raise ValueError("example phases must be contiguous")
+        expected_start = phase["end"] + 1
+        phase_ids.add(phase["id"])
+    if expected_start != 77:
+        raise ValueError("example phases must cover all 77 steps")
+
+    events = payload["events"]
+    if not isinstance(events, list) or len(events) != 77:
+        raise ValueError("example trajectory must contain exactly 77 events")
+    if [event.get("index") for event in events] != list(range(77)):
+        raise ValueError("example event indices must be sequential from 0 to 76")
+    previous_state = {"candidates": 0, "checks": 0, "notes": 0}
+    for event in events:
+        required_event = {"index", "actor", "kind", "title", "detail", "tone", "phase", "state"}
+        if set(event) != required_event:
+            raise ValueError(f"example event {event.get('index')} has invalid fields")
+        if event["actor"] not in actor_ids:
+            raise ValueError(f"example event {event['index']} uses an unknown actor")
+        if event["phase"] not in phase_ids:
+            raise ValueError(f"example event {event['index']} uses an unknown phase")
+        if event["tone"] not in {"normal", "error", "final"}:
+            raise ValueError(f"example event {event['index']} has an invalid tone")
+        if not all(isinstance(event[key], str) and event[key].strip() for key in ("kind", "title", "detail")):
+            raise ValueError(f"example event {event['index']} text must be non-empty")
+        state = event["state"]
+        if set(state) != {"candidates", "checks", "notes"}:
+            raise ValueError(f"example event {event['index']} has invalid state fields")
+        if any(not isinstance(value, int) or value < previous_state[key] for key, value in state.items()):
+            raise ValueError("example cumulative state must be non-decreasing integers")
+        previous_state = state
+
+    failure_path = payload["failure_path"]
+    if not isinstance(failure_path, list) or [item.get("step") for item in failure_path] != CANONICAL_FAILURE_PATH:
+        raise ValueError("example failure path must match source events 24, 51, 69, and 74")
+    for item in failure_path:
+        if set(item) != {"step", "label", "detail"}:
+            raise ValueError("example failure path entries must contain step, label, and detail")
+    final_error = events[74]
+    if final_error["actor"] != "writer" or final_error["tone"] != "error" or "caveat" not in final_error["detail"].casefold():
+        raise ValueError("example final failure must remain the writer caveat omission at step 74")
+
+
 def _png_dimensions(path: Path) -> tuple[int, int]:
     with path.open("rb") as handle:
         header = handle.read(24)
@@ -375,10 +479,12 @@ def validate_site(root: Path) -> None:
     required_files = [
         "assets/styles.css",
         "assets/app.js",
+        "assets/trajectory.js",
         "assets/favicon.png",
         "assets/og-card.png",
         "data/site.json",
         "data/leaderboard.json",
+        "data/example_trajectory.json",
         "robots.txt",
         "sitemap.xml",
     ]
@@ -436,11 +542,16 @@ def main() -> int:
     root = args.root.resolve()
 
     payload = json.loads((root / "data" / "leaderboard.json").read_text(encoding="utf-8"))
+    example = json.loads((root / "data" / "example_trajectory.json").read_text(encoding="utf-8"))
     validate_leaderboard(payload)
+    validate_example_trajectory(example)
     validate_exporter_contract(root / "scripts" / "export_paper_results.py")
     validate_site(root)
     validate_repository_safety(root)
-    print(f"Validated {len(payload['results'])} leaderboard results and static site")
+    print(
+        f"Validated {len(payload['results'])} leaderboard results, "
+        f"{len(example['events'])} example events, and static site"
+    )
     return 0
 
 

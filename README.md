@@ -17,6 +17,8 @@ Each row keeps a canonical `method`, a presentation-oriented `display_name`, a s
 
 Responsible-role accuracy, root ±5 accuracy, MAE, coverage, and failure counts remain in the same JSON record as complementary diagnostics even though they are not shown in the primary table.
 
+`data/example_trajectory.json` is the source for the illustrative TravelPlanner case below the leaderboard. It stores the 77-step trace, actors, phases, failure-relevant event path, and final-output comparison rendered by `assets/trajectory.js`. The case intentionally distinguishes the agent's internal `TASK_COMPLETE` status from the benchmark's `Failed` outcome; its highlighted steps are explanatory events, not published gold root annotations.
+
 The paper-result exporter scores responsible-role accuracy from the explicit `predicted_agent` column in the evaluation records. It never derives the role from `history[predicted_step].name`. Paper-reported Root MAE values are pinned in the exporter because failed predictions do not serialize a `step_abs_err` in the records table.
 
 ## Local preview
@@ -37,6 +39,7 @@ python3 scripts/export_paper_results.py \
 python3 scripts/validate_data.py
 python3 -m unittest discover -s tests -v
 node --check assets/app.js
+node --check assets/trajectory.js
 ```
 
 ## Contributing

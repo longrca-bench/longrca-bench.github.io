@@ -34,6 +34,7 @@ jobs:
           python -m unittest discover -s tests -v
           python scripts/validate_data.py
           node --check assets/app.js
+          node --check assets/trajectory.js
 
   deploy:
     needs: validate

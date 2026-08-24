@@ -1,0 +1,1210 @@
+{
+  "schema_version": "1.0.0",
+  "id": "travelplanner-newark-query-44",
+  "benchmark": "TravelPlanner",
+  "title": "Scranton to Newark",
+  "route": {
+    "origin": "Scranton",
+    "destination": "Newark"
+  },
+  "task": {
+    "dates": "Mar 24–26, 2022",
+    "travelers": 1,
+    "budget_usd": 1600,
+    "tool_requests": 48
+  },
+  "agent_status": "TASK_COMPLETE",
+  "outcome": "Failed",
+  "summary": "The system emitted TASK_COMPLETE, but the final itinerary mislabeled a Manhattan stay as Newark and omitted the required Manhattan / PATH caveat.",
+  "actors": [
+    {
+      "id": "system",
+      "label": "System / Terminal"
+    },
+    {
+      "id": "planner",
+      "label": "Task Planner"
+    },
+    {
+      "id": "transport",
+      "label": "Transport"
+    },
+    {
+      "id": "stay",
+      "label": "Stay"
+    },
+    {
+      "id": "food",
+      "label": "Food + Attractions"
+    },
+    {
+      "id": "verifier",
+      "label": "Verifier"
+    },
+    {
+      "id": "manager",
+      "label": "Manager"
+    },
+    {
+      "id": "writer",
+      "label": "Writer"
+    }
+  ],
+  "phases": [
+    {
+      "id": "plan",
+      "label": "Plan",
+      "start": 0,
+      "end": 1
+    },
+    {
+      "id": "transport",
+      "label": "Transport",
+      "start": 2,
+      "end": 16
+    },
+    {
+      "id": "stay-shortlist",
+      "label": "Stay shortlist",
+      "start": 17,
+      "end": 25
+    },
+    {
+      "id": "food-sights",
+      "label": "Food + sights",
+      "start": 26,
+      "end": 45
+    },
+    {
+      "id": "verify",
+      "label": "Verify",
+      "start": 46,
+      "end": 57
+    },
+    {
+      "id": "stay-rework",
+      "label": "Stay rework",
+      "start": 58,
+      "end": 66
+    },
+    {
+      "id": "decision",
+      "label": "Decision",
+      "start": 67,
+      "end": 72
+    },
+    {
+      "id": "writer",
+      "label": "Writer",
+      "start": 73,
+      "end": 76
+    }
+  ],
+  "events": [
+    {
+      "index": 0,
+      "actor": "system",
+      "kind": "instruction",
+      "title": "Load task and workflow",
+      "detail": "Record query 44, dates, budget, traveler count, and four mandatory workflow rules.",
+      "tone": "normal",
+      "phase": "plan",
+      "state": {
+        "candidates": 0,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 1,
+      "actor": "planner",
+      "kind": "plan",
+      "title": "Build fact sheet and work plan",
+      "detail": "Split the task into transport, stay, food and attractions, verification, and final writing.",
+      "tone": "normal",
+      "phase": "plan",
+      "state": {
+        "candidates": 0,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 2,
+      "actor": "planner",
+      "kind": "handoff",
+      "title": "Dispatch transport search",
+      "detail": "Send origin, destination, travel dates, and a request to cover flights, rail, bus, taxi, and driving.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 0,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 3,
+      "actor": "transport",
+      "kind": "thought",
+      "title": "Transport agent accepts",
+      "detail": "Prepare to search round-trip options between Scranton and Newark.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 0,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 4,
+      "actor": "transport",
+      "kind": "tool",
+      "title": "Read initial blackboard",
+      "detail": "Return 0 candidates, 0 checks, 0 notes, and no final itinerary.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 0,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 5,
+      "actor": "transport",
+      "kind": "tool",
+      "title": "Query Pennsylvania city list",
+      "detail": "city_search returns 9 cities, including Scranton.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 0,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 6,
+      "actor": "transport",
+      "kind": "tool",
+      "title": "Query outbound flights",
+      "detail": "flight_search returns F3920918 at $33 and F3920949 at $29 for Mar 24.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 0,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 7,
+      "actor": "transport",
+      "kind": "tool",
+      "title": "Query return flight",
+      "detail": "flight_search returns F3919859 at $22 for Mar 26, 21:46–22:23.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 0,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 8,
+      "actor": "transport",
+      "kind": "tool",
+      "title": "Query self-driving route",
+      "detail": "distance_matrix returns unavailable with no valid route record.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 0,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 9,
+      "actor": "transport",
+      "kind": "tool",
+      "title": "Query taxi option",
+      "detail": "distance_matrix returns 179 km, 1 h 51 min, and $179 one way.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 0,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 10,
+      "actor": "transport",
+      "kind": "thought",
+      "title": "Prepare transport writes",
+      "detail": "Structure the returned records for the shared blackboard.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 0,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 11,
+      "actor": "transport",
+      "kind": "tool",
+      "title": "Add morning outbound flight",
+      "detail": "Store F3920918, $33, 05:57–06:44; candidate count becomes 1.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 1,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 12,
+      "actor": "transport",
+      "kind": "tool",
+      "title": "Add cheapest outbound flight",
+      "detail": "Store F3920949, $29, 13:40–14:46; candidate count becomes 2.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 2,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 13,
+      "actor": "transport",
+      "kind": "tool",
+      "title": "Add return flight",
+      "detail": "Store F3919859, $22, 21:46–22:23; candidate count becomes 3.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 3,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 14,
+      "actor": "transport",
+      "kind": "tool",
+      "title": "Add taxi option",
+      "detail": "Store a $358 round-trip estimate; candidate count becomes 4.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 4,
+        "checks": 0,
+        "notes": 0
+      }
+    },
+    {
+      "index": 15,
+      "actor": "transport",
+      "kind": "tool",
+      "title": "Add transport summary",
+      "detail": "Recommend the $51 round-trip flight pair and record missing driving data; note count becomes 1.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 4,
+        "checks": 0,
+        "notes": 1
+      }
+    },
+    {
+      "index": 16,
+      "actor": "transport",
+      "kind": "result",
+      "title": "Transport agent returns",
+      "detail": "Confirm 4 transport candidates and 1 summary note on the blackboard.",
+      "tone": "normal",
+      "phase": "transport",
+      "state": {
+        "candidates": 4,
+        "checks": 0,
+        "notes": 1
+      }
+    },
+    {
+      "index": 17,
+      "actor": "planner",
+      "kind": "handoff",
+      "title": "Dispatch stay search",
+      "detail": "Send Newark, 1 traveler, 2 nights, and the budget remaining after transport.",
+      "tone": "normal",
+      "phase": "stay-shortlist",
+      "state": {
+        "candidates": 4,
+        "checks": 0,
+        "notes": 1
+      }
+    },
+    {
+      "index": 18,
+      "actor": "stay",
+      "kind": "tool",
+      "title": "Query Newark stays",
+      "detail": "accommodation_search returns 15 records.",
+      "tone": "normal",
+      "phase": "stay-shortlist",
+      "state": {
+        "candidates": 4,
+        "checks": 0,
+        "notes": 1
+      }
+    },
+    {
+      "index": 19,
+      "actor": "stay",
+      "kind": "thought",
+      "title": "Apply stay constraints",
+      "detail": "Convert the 3-day trip to 2 nights; require minimum nights ≤ 2 and occupancy ≥ 1.",
+      "tone": "normal",
+      "phase": "stay-shortlist",
+      "state": {
+        "candidates": 4,
+        "checks": 0,
+        "notes": 1
+      }
+    },
+    {
+      "index": 20,
+      "actor": "stay",
+      "kind": "tool",
+      "title": "Add UWS Manhattan listing",
+      "detail": "Store $117 per night and $234 total; candidate count becomes 5.",
+      "tone": "normal",
+      "phase": "stay-shortlist",
+      "state": {
+        "candidates": 5,
+        "checks": 0,
+        "notes": 1
+      }
+    },
+    {
+      "index": 21,
+      "actor": "stay",
+      "kind": "tool",
+      "title": "Add Brooklyn / JFK apartment",
+      "detail": "Store $610 per night and $1,220 total; candidate count becomes 6.",
+      "tone": "normal",
+      "phase": "stay-shortlist",
+      "state": {
+        "candidates": 6,
+        "checks": 0,
+        "notes": 1
+      }
+    },
+    {
+      "index": 22,
+      "actor": "stay",
+      "kind": "tool",
+      "title": "Add East Flatbush room",
+      "detail": "Store $432 per night and $864 total; candidate count becomes 7.",
+      "tone": "normal",
+      "phase": "stay-shortlist",
+      "state": {
+        "candidates": 7,
+        "checks": 0,
+        "notes": 1
+      }
+    },
+    {
+      "index": 23,
+      "actor": "stay",
+      "kind": "tool",
+      "title": "Add Victorian Home room",
+      "detail": "Store $1,196 per night and $2,392 total, over budget; candidate count becomes 8.",
+      "tone": "normal",
+      "phase": "stay-shortlist",
+      "state": {
+        "candidates": 8,
+        "checks": 0,
+        "notes": 1
+      }
+    },
+    {
+      "index": 24,
+      "actor": "stay",
+      "kind": "tool",
+      "title": "Add stay summary",
+      "detail": "Provisionally recommend UWS Manhattan using the tool city field Newark; note count becomes 2.",
+      "tone": "normal",
+      "phase": "stay-shortlist",
+      "state": {
+        "candidates": 8,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 25,
+      "actor": "stay",
+      "kind": "result",
+      "title": "Stay agent returns",
+      "detail": "Submit 4 stay candidates and the filter rationale.",
+      "tone": "normal",
+      "phase": "stay-shortlist",
+      "state": {
+        "candidates": 8,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 26,
+      "actor": "planner",
+      "kind": "handoff",
+      "title": "Dispatch food and attraction search",
+      "detail": "Request 5–8 Newark restaurants, 5–8 attractions, prices, and a budget estimate.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 8,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 27,
+      "actor": "food",
+      "kind": "thought",
+      "title": "Food and attraction agent accepts",
+      "detail": "Prepare Newark restaurant and attraction queries.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 8,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 28,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Query restaurants",
+      "detail": "restaurant_search returns 30 restaurants.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 8,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 29,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Query attractions",
+      "detail": "attraction_search returns 20 attractions.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 8,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 30,
+      "actor": "food",
+      "kind": "thought",
+      "title": "Select strong candidates",
+      "detail": "Choose 6 restaurants and 6 attractions for the blackboard.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 8,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 31,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add Drifters Cafe",
+      "detail": "Store $24 average cost and 4.1 rating; candidate count becomes 9.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 9,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 32,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add Bernardo's",
+      "detail": "Store $84 average cost and 4.0 rating; candidate count becomes 10.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 10,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 33,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add Mogambo Khush Hua",
+      "detail": "Store $39 average cost and 3.8 rating; candidate count becomes 11.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 11,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 34,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add Artistry",
+      "detail": "Store $79 average cost and 3.8 rating; candidate count becomes 12.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 12,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 35,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add Tunday Kababi",
+      "detail": "Store $10 average cost and 2.2 rating; candidate count becomes 13.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 13,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 36,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add Angeethi Restaurant",
+      "detail": "Store $12 average cost and 3.3 rating; candidate count becomes 14.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 14,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 37,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add Newark Museum of Art",
+      "detail": "Store 49 Washington St; candidate count becomes 15.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 15,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 38,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add Branch Brook Park",
+      "detail": "Store the free park and cherry-blossom note; candidate count becomes 16.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 16,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 39,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add Military Park",
+      "detail": "Store the free downtown Newark park; candidate count becomes 17.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 17,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 40,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add Dreyfuss Planetarium",
+      "detail": "Store the venue inside Newark Museum; candidate count becomes 18.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 18,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 41,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add New Jersey Historical Society",
+      "detail": "Store 52 Park Pl; candidate count becomes 19.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 19,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 42,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add Newark Riverfront Park",
+      "detail": "Store the Raymond Blvd riverfront park; candidate count becomes 20.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 20,
+        "checks": 0,
+        "notes": 2
+      }
+    },
+    {
+      "index": 43,
+      "actor": "food",
+      "kind": "tool",
+      "title": "Add food and sights summary",
+      "detail": "Estimate $51 transport, $234 stay, $180 food, and $40 attractions: about $505 total; note count becomes 3.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 20,
+        "checks": 0,
+        "notes": 3
+      }
+    },
+    {
+      "index": 44,
+      "actor": "food",
+      "kind": "result",
+      "title": "Food and attraction agent returns",
+      "detail": "Confirm 12 strong candidates and the trip budget estimate on the blackboard.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 20,
+        "checks": 0,
+        "notes": 3
+      }
+    },
+    {
+      "index": 45,
+      "actor": "food",
+      "kind": "result",
+      "title": "Collection stage closes",
+      "detail": "End the food and attraction collection phase.",
+      "tone": "normal",
+      "phase": "food-sights",
+      "state": {
+        "candidates": 20,
+        "checks": 0,
+        "notes": 3
+      }
+    },
+    {
+      "index": 46,
+      "actor": "planner",
+      "kind": "handoff",
+      "title": "Dispatch blackboard verification",
+      "detail": "Send all candidates and require checks for dates, prices, city, budget, and local constraints.",
+      "tone": "normal",
+      "phase": "verify",
+      "state": {
+        "candidates": 20,
+        "checks": 0,
+        "notes": 3
+      }
+    },
+    {
+      "index": 47,
+      "actor": "verifier",
+      "kind": "tool",
+      "title": "Read complete blackboard",
+      "detail": "Return 20 candidates, 3 notes, and 0 verification conclusions.",
+      "tone": "normal",
+      "phase": "verify",
+      "state": {
+        "candidates": 20,
+        "checks": 0,
+        "notes": 3
+      }
+    },
+    {
+      "index": 48,
+      "actor": "verifier",
+      "kind": "thought",
+      "title": "Begin itemized review",
+      "detail": "Check transport, stay, venues, budget, and local constraints in sequence.",
+      "tone": "normal",
+      "phase": "verify",
+      "state": {
+        "candidates": 20,
+        "checks": 0,
+        "notes": 3
+      }
+    },
+    {
+      "index": 49,
+      "actor": "verifier",
+      "kind": "verify",
+      "title": "Transport verification passes",
+      "detail": "Dates and prices match; the $51–55 flights and $358 taxi are grounded in tool output.",
+      "tone": "normal",
+      "phase": "verify",
+      "state": {
+        "candidates": 20,
+        "checks": 1,
+        "notes": 3
+      }
+    },
+    {
+      "index": 50,
+      "actor": "verifier",
+      "kind": "verify",
+      "title": "Stay occupancy and nights pass",
+      "detail": "One traveler, two nights, minimum nights, and occupancy all match.",
+      "tone": "normal",
+      "phase": "verify",
+      "state": {
+        "candidates": 20,
+        "checks": 2,
+        "notes": 3
+      }
+    },
+    {
+      "index": 51,
+      "actor": "verifier",
+      "kind": "verify",
+      "title": "Stay city consistency fails",
+      "detail": "Names reveal UWS Manhattan, East Flatbush, and Brooklyn/JFK rather than Newark.",
+      "tone": "error",
+      "phase": "verify",
+      "state": {
+        "candidates": 20,
+        "checks": 3,
+        "notes": 3
+      }
+    },
+    {
+      "index": 52,
+      "actor": "verifier",
+      "kind": "verify",
+      "title": "Venue city verification passes",
+      "detail": "All 6 restaurants and 6 attractions have Newark locations.",
+      "tone": "normal",
+      "phase": "verify",
+      "state": {
+        "candidates": 20,
+        "checks": 4,
+        "notes": 3
+      }
+    },
+    {
+      "index": 53,
+      "actor": "verifier",
+      "kind": "verify",
+      "title": "Budget calculation passes",
+      "detail": "The best-case trip is about $505, leaving $1,095.",
+      "tone": "normal",
+      "phase": "verify",
+      "state": {
+        "candidates": 20,
+        "checks": 5,
+        "notes": 3
+      }
+    },
+    {
+      "index": 54,
+      "actor": "verifier",
+      "kind": "verify",
+      "title": "Local constraints pass",
+      "detail": "House rule, cuisine, room type, and transportation are all null.",
+      "tone": "normal",
+      "phase": "verify",
+      "state": {
+        "candidates": 20,
+        "checks": 6,
+        "notes": 3
+      }
+    },
+    {
+      "index": 55,
+      "actor": "verifier",
+      "kind": "error",
+      "title": "Overall conclusion write fails",
+      "detail": "add_verifier_conclusion rejects a malformed JSON payload with an Extra data parse error.",
+      "tone": "error",
+      "phase": "verify",
+      "state": {
+        "candidates": 20,
+        "checks": 6,
+        "notes": 3
+      }
+    },
+    {
+      "index": 56,
+      "actor": "verifier",
+      "kind": "verify",
+      "title": "Retry records not ready",
+      "detail": "Successfully store NOT READY with lodging city mismatch as the blocking issue.",
+      "tone": "error",
+      "phase": "verify",
+      "state": {
+        "candidates": 20,
+        "checks": 7,
+        "notes": 3
+      }
+    },
+    {
+      "index": 57,
+      "actor": "verifier",
+      "kind": "result",
+      "title": "Verifier returns blocking report",
+      "detail": "Require a search for genuine Newark lodging or an explicit NYC exception.",
+      "tone": "normal",
+      "phase": "verify",
+      "state": {
+        "candidates": 20,
+        "checks": 7,
+        "notes": 3
+      }
+    },
+    {
+      "index": 58,
+      "actor": "planner",
+      "kind": "handoff",
+      "title": "Dispatch stay rework",
+      "detail": "Send the 15 original records and require true-location checks plus caveated replacements.",
+      "tone": "normal",
+      "phase": "stay-rework",
+      "state": {
+        "candidates": 20,
+        "checks": 7,
+        "notes": 3
+      }
+    },
+    {
+      "index": 59,
+      "actor": "stay",
+      "kind": "tool",
+      "title": "Query Newark stays again",
+      "detail": "The same 15 NYC-named records return.",
+      "tone": "normal",
+      "phase": "stay-rework",
+      "state": {
+        "candidates": 20,
+        "checks": 7,
+        "notes": 3
+      }
+    },
+    {
+      "index": 60,
+      "actor": "stay",
+      "kind": "thought",
+      "title": "Confirm source mismatch",
+      "detail": "All 15 records labeled city=Newark are actually in Manhattan or Brooklyn.",
+      "tone": "normal",
+      "phase": "stay-rework",
+      "state": {
+        "candidates": 20,
+        "checks": 7,
+        "notes": 3
+      }
+    },
+    {
+      "index": 61,
+      "actor": "stay",
+      "kind": "tool",
+      "title": "Add critical data-issue note",
+      "detail": "Record that the database contains no genuine Newark stay; note count becomes 4.",
+      "tone": "normal",
+      "phase": "stay-rework",
+      "state": {
+        "candidates": 20,
+        "checks": 7,
+        "notes": 4
+      }
+    },
+    {
+      "index": 62,
+      "actor": "stay",
+      "kind": "thought",
+      "title": "Evaluate acceptable fallback",
+      "detail": "Retain 2-night NYC options and estimate their commute to Newark.",
+      "tone": "normal",
+      "phase": "stay-rework",
+      "state": {
+        "candidates": 20,
+        "checks": 7,
+        "notes": 4
+      }
+    },
+    {
+      "index": 63,
+      "actor": "stay",
+      "kind": "tool",
+      "title": "Add corrected UWS candidate",
+      "detail": "Mark actual location Manhattan and about 30 minutes to Newark; candidate count becomes 21.",
+      "tone": "normal",
+      "phase": "stay-rework",
+      "state": {
+        "candidates": 21,
+        "checks": 7,
+        "notes": 4
+      }
+    },
+    {
+      "index": 64,
+      "actor": "stay",
+      "kind": "tool",
+      "title": "Add corrected East Flatbush candidate",
+      "detail": "Mark actual location Brooklyn and 45–60 minutes to Newark; candidate count becomes 22.",
+      "tone": "normal",
+      "phase": "stay-rework",
+      "state": {
+        "candidates": 22,
+        "checks": 7,
+        "notes": 4
+      }
+    },
+    {
+      "index": 65,
+      "actor": "stay",
+      "kind": "tool",
+      "title": "Add corrected Brooklyn/JFK candidate",
+      "detail": "Mark actual location Brooklyn and 60+ minutes to Newark; candidate count becomes 23.",
+      "tone": "normal",
+      "phase": "stay-rework",
+      "state": {
+        "candidates": 23,
+        "checks": 7,
+        "notes": 4
+      }
+    },
+    {
+      "index": 66,
+      "actor": "stay",
+      "kind": "result",
+      "title": "Stay rework returns",
+      "detail": "Confirm no genuine Newark record and recommend an explicit data-limitation caveat.",
+      "tone": "normal",
+      "phase": "stay-rework",
+      "state": {
+        "candidates": 23,
+        "checks": 7,
+        "notes": 4
+      }
+    },
+    {
+      "index": 67,
+      "actor": "planner",
+      "kind": "handoff",
+      "title": "Request Manager decision",
+      "detail": "Send the UWS fallback, city mismatch, transit caveat, and remaining budget for approval.",
+      "tone": "normal",
+      "phase": "decision",
+      "state": {
+        "candidates": 23,
+        "checks": 7,
+        "notes": 4
+      }
+    },
+    {
+      "index": 68,
+      "actor": "manager",
+      "kind": "thought",
+      "title": "Manager prepares approval",
+      "detail": "Plan one final verifier conclusion, then check writer readiness.",
+      "tone": "normal",
+      "phase": "decision",
+      "state": {
+        "candidates": 23,
+        "checks": 7,
+        "notes": 4
+      }
+    },
+    {
+      "index": 69,
+      "actor": "stay",
+      "kind": "verify",
+      "title": "Stay-location exception approved",
+      "detail": "Approve UWS Manhattan at $234 and require an explicit Manhattan / PATH caveat.",
+      "tone": "normal",
+      "phase": "decision",
+      "state": {
+        "candidates": 23,
+        "checks": 8,
+        "notes": 4
+      }
+    },
+    {
+      "index": 70,
+      "actor": "stay",
+      "kind": "tool",
+      "title": "Read final blackboard",
+      "detail": "Return 23 candidates, 8 check records, and 4 notes.",
+      "tone": "normal",
+      "phase": "decision",
+      "state": {
+        "candidates": 23,
+        "checks": 8,
+        "notes": 4
+      }
+    },
+    {
+      "index": 71,
+      "actor": "manager",
+      "kind": "final",
+      "title": "Emit TASK_COMPLETE",
+      "detail": "Pass the readiness checklist with the lodging limitation, selected flights, and $1,315 headroom.",
+      "tone": "final",
+      "phase": "decision",
+      "state": {
+        "candidates": 23,
+        "checks": 8,
+        "notes": 4
+      }
+    },
+    {
+      "index": 72,
+      "actor": "manager",
+      "kind": "final",
+      "title": "Orchestrator catches completion token",
+      "detail": "Detect TASK_COMPLETE and hand control to the writer.",
+      "tone": "final",
+      "phase": "decision",
+      "state": {
+        "candidates": 23,
+        "checks": 8,
+        "notes": 4
+      }
+    },
+    {
+      "index": 73,
+      "actor": "system",
+      "kind": "instruction",
+      "title": "Instruct WriterPlan generation",
+      "detail": "Require structured JSON only and attach the full blackboard snapshot.",
+      "tone": "normal",
+      "phase": "writer",
+      "state": {
+        "candidates": 23,
+        "checks": 8,
+        "notes": 4
+      }
+    },
+    {
+      "index": 74,
+      "actor": "writer",
+      "kind": "result",
+      "title": "Writer returns a 3-day itinerary",
+      "detail": "Generate transport, meals, attractions, and stay fields but omit the approved Manhattan caveat.",
+      "tone": "error",
+      "phase": "writer",
+      "state": {
+        "candidates": 23,
+        "checks": 8,
+        "notes": 4
+      }
+    },
+    {
+      "index": 75,
+      "actor": "manager",
+      "kind": "final",
+      "title": "Return orchestration result",
+      "detail": "Mark the manager task_result.",
+      "tone": "final",
+      "phase": "writer",
+      "state": {
+        "candidates": 23,
+        "checks": 8,
+        "notes": 4
+      }
+    },
+    {
+      "index": 76,
+      "actor": "system",
+      "kind": "final",
+      "title": "End run",
+      "detail": "Computer_terminal reports that TASK_COMPLETE was detected.",
+      "tone": "final",
+      "phase": "writer",
+      "state": {
+        "candidates": 23,
+        "checks": 8,
+        "notes": 4
+      }
+    }
+  ],
+  "failure_path": [
+    {
+      "step": 24,
+      "label": "Incorrect stay accepted",
+      "detail": "The stay summary provisionally recommends a UWS Manhattan listing using the tool city field Newark."
+    },
+    {
+      "step": 51,
+      "label": "Verifier exposes the mismatch",
+      "detail": "The verifier recognizes that the shortlisted stays are actually in Manhattan or Brooklyn."
+    },
+    {
+      "step": 69,
+      "label": "Exception approved with a condition",
+      "detail": "The fallback is approved only if the final answer explicitly states the Manhattan location and PATH commute caveat."
+    },
+    {
+      "step": 74,
+      "label": "Writer drops the condition",
+      "detail": "The final itinerary omits the approved caveat and still presents the Manhattan stay as Newark."
+    }
+  ],
+  "final_failure": {
+    "manager_requirement": "Use the UWS Manhattan fallback only with an explicit Manhattan location and PATH commute caveat.",
+    "observed_output": "The Writer labels “1 Bedroom in UWS Manhattan” as Newark and omits the required caveat.",
+    "explanation": "The completion token reflects orchestration status, not task correctness. The final answer violates the approved location condition, so the benchmark outcome is failed."
+  }
+}

@@ -28,4 +28,6 @@ jobs:
       - name: Validate public data and site contracts
         run: python scripts/validate_data.py
       - name: Check JavaScript syntax
-        run: node --check assets/app.js
+        run: |
+          node --check assets/app.js
+          node --check assets/trajectory.js

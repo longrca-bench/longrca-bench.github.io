@@ -37,12 +37,33 @@ class CompleteSiteTest(unittest.TestCase):
         cls.parser.feed(cls.html)
 
     def test_all_sections_and_navigation_anchors_exist(self) -> None:
-        expected = {"overview", "leaderboard", "contribute", "citation"}
+        expected = {"overview", "leaderboard", "example", "contribute", "citation"}
         self.assertTrue(expected.issubset(self.parser.ids))
         for anchor in expected - {"overview"}:
             self.assertIn(f"#{anchor}", self.parser.hrefs)
         self.assertNotIn("metrics", self.parser.ids)
         self.assertNotIn("#metrics", self.parser.hrefs)
+
+    def test_failed_trajectory_example_is_between_leaderboard_and_contribute(self) -> None:
+        self.assertIn('id="example"', self.html)
+        leaderboard = self.html.index('id="leaderboard"')
+        example = self.html.index('id="example"')
+        contribute = self.html.index('id="contribute"')
+        self.assertLess(leaderboard, example)
+        self.assertLess(example, contribute)
+        self.assertIn("An Example of a Failed Task Trajectory", self.html)
+        self.assertIn("Agent status", self.html)
+        self.assertIn("Benchmark outcome", self.html)
+        self.assertIn('id="trajectory-example"', self.html)
+        self.assertIn('src="assets/trajectory.js"', self.html)
+        self.assertNotIn("<iframe", self.html)
+
+    def test_example_exposes_three_accessible_views(self) -> None:
+        for view in ("map", "failure", "result"):
+            self.assertIn(f'data-trace-tab="{view}"', self.html)
+            self.assertIn(f'data-trace-view="{view}"', self.html)
+        self.assertIn('aria-label="Play trajectory"', self.html)
+        self.assertIn('aria-label="Trajectory step"', self.html)
 
     def test_leaderboard_copy_is_concise(self) -> None:
         self.assertIn("LongRCA Bench Leaderboard", self.html)

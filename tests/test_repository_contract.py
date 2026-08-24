@@ -40,6 +40,7 @@ class RepositoryContractTest(unittest.TestCase):
             "github-pages",
         ):
             self.assertIn(token, workflow)
+        self.assertIn("node --check assets/trajectory.js", workflow)
 
     def test_ci_runs_data_tests_and_javascript_check(self) -> None:
         workflow = (REPO_ROOT / ".github" / "workflows" / "validate.yml").read_text(
@@ -49,6 +50,7 @@ class RepositoryContractTest(unittest.TestCase):
         self.assertIn("python -m unittest discover", workflow)
         self.assertIn("python scripts/validate_data.py", workflow)
         self.assertIn("node --check assets/app.js", workflow)
+        self.assertIn("node --check assets/trajectory.js", workflow)
 
     def test_public_json_schema_documents_count_based_rows(self) -> None:
         schema = json.loads(

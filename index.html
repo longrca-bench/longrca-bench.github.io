@@ -22,6 +22,7 @@
     <link rel="icon" href="assets/favicon.png" type="image/png">
     <link rel="stylesheet" href="assets/styles.css">
     <script src="assets/app.js" defer></script>
+    <script src="assets/trajectory.js" defer></script>
   </head>
   <body>
     <a class="skip-link" href="#leaderboard">Skip to leaderboard</a>
@@ -33,6 +34,7 @@
         </a>
         <div class="nav-links">
           <a href="#leaderboard">Leaderboard</a>
+          <a href="#example">Example</a>
           <a href="#contribute">Contribute</a>
           <a href="#citation">Citation</a>
           <a class="nav-paper" href="https://arxiv.org/abs/2608.15242">Paper ↗</a>
@@ -95,11 +97,102 @@
         </div>
       </section>
 
+      <section class="section example-section" id="example">
+        <div class="shell">
+          <div class="section-heading example-heading">
+            <div>
+              <p class="section-index">02 / Case Study</p>
+              <h2>An Example of a Failed Task Trajectory</h2>
+            </div>
+            <p>A long execution can report completion while still returning a failed result. This TravelPlanner trace shows how a missed constraint survives verification and reappears in the final answer.</p>
+          </div>
+
+          <article class="trajectory-example" id="trajectory-example" aria-labelledby="trajectory-example-title">
+            <header class="trajectory-header">
+              <div>
+                <span class="case-kicker">TravelPlanner · Query 44</span>
+                <h3 id="trajectory-example-title">Scranton <span aria-hidden="true">→</span> Newark</h3>
+                <p>Mar 24–26, 2022 · 1 traveler · $1,600 budget</p>
+              </div>
+              <div class="outcome-contrast" aria-label="Agent and benchmark outcomes">
+                <div><span>Agent status</span><strong>TASK_COMPLETE</strong></div>
+                <div class="failed-outcome"><span>Benchmark outcome</span><strong>FAILED</strong></div>
+              </div>
+            </header>
+
+            <div class="trajectory-metrics" aria-label="Trajectory summary">
+              <div><strong>77</strong><span>message steps</span></div>
+              <div><strong>8</strong><span>agent roles</span></div>
+              <div><strong>48</strong><span>tool requests</span></div>
+              <div><strong>Step 74</strong><span>failure exposed</span></div>
+            </div>
+
+            <div class="trajectory-tabs" role="tablist" aria-label="Trajectory views">
+              <button type="button" role="tab" aria-selected="true" aria-controls="trajectory-map" data-trace-tab="map">Execution Map</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="trajectory-failure" data-trace-tab="failure">Failure Path</button>
+              <button type="button" role="tab" aria-selected="false" aria-controls="trajectory-result" data-trace-tab="result">Final Output</button>
+            </div>
+
+            <section class="trajectory-view" id="trajectory-map" role="tabpanel" data-trace-view="map">
+              <div class="trajectory-legend" aria-label="Event legend">
+                <span><i class="legend-dot normal-dot"></i>Agent step</span>
+                <span><i class="legend-dot failure-dot"></i>Failure-relevant step</span>
+                <span><i class="legend-dot error-dot"></i>Error exposed</span>
+              </div>
+              <div class="trajectory-map-wrap">
+                <svg class="trajectory-map" data-trajectory-map role="img" aria-label="Interactive 77-step multi-agent execution map"></svg>
+              </div>
+              <div class="trajectory-controls">
+                <button type="button" data-trace-prev aria-label="Previous trajectory step">‹</button>
+                <button type="button" data-trace-play aria-label="Play trajectory">▶</button>
+                <input type="range" min="0" max="76" value="0" data-trace-range aria-label="Trajectory step">
+                <output data-trace-progress>0 / 76</output>
+                <button type="button" data-trace-next aria-label="Next trajectory step">›</button>
+              </div>
+              <div class="trajectory-detail" aria-live="polite">
+                <div>
+                  <span class="detail-actor" data-trace-actor>System / Terminal</span>
+                  <span class="detail-phase" data-trace-phase>Plan</span>
+                </div>
+                <h4 data-trace-title>Loading trajectory…</h4>
+                <p data-trace-detail></p>
+                <dl class="detail-state" aria-label="Blackboard state at selected step">
+                  <div><dt>Candidates</dt><dd data-trace-candidates>0</dd></div>
+                  <div><dt>Checks</dt><dd data-trace-checks>0</dd></div>
+                  <div><dt>Notes</dt><dd data-trace-notes>0</dd></div>
+                </dl>
+              </div>
+            </section>
+
+            <section class="trajectory-view" id="trajectory-failure" role="tabpanel" data-trace-view="failure" hidden>
+              <div class="failure-path" data-failure-path></div>
+              <p class="trajectory-note">These are failure-relevant events from the supplied trace, not a published gold root-step annotation.</p>
+            </section>
+
+            <section class="trajectory-view" id="trajectory-result" role="tabpanel" data-trace-view="result" hidden>
+              <div class="result-comparison">
+                <div>
+                  <span class="comparison-label">Required by Manager</span>
+                  <p data-manager-requirement>Loading requirement…</p>
+                </div>
+                <div class="observed-failure">
+                  <span class="comparison-label">Returned by Writer</span>
+                  <p data-observed-failure>Loading final output…</p>
+                </div>
+              </div>
+              <div class="failure-callout"><strong>Why the task failed</strong><p data-failure-explanation></p></div>
+            </section>
+
+            <p class="trajectory-load-error" data-trajectory-error hidden>Example trajectory could not be loaded.</p>
+          </article>
+        </div>
+      </section>
+
       <section class="section contribute-section" id="contribute">
         <div class="shell">
           <div class="contribute-heading">
             <div>
-              <p class="section-index">02 / Contribute</p>
+              <p class="section-index">03 / Contribute</p>
               <h2>Submit results through a reviewed pull request.</h2>
             </div>
             <p>Community results will be validated automatically, reviewed by maintainers, and added after the PR is merged. Because labels are public, submissions should be treated as reproducibility reports.</p>
@@ -136,7 +229,7 @@
       <section class="section citation-section" id="citation">
         <div class="shell citation-grid">
           <div class="citation-copy">
-            <p class="section-index">03 / Citation</p>
+            <p class="section-index">04 / Citation</p>
             <h2>Build on LongRCA Bench.</h2>
             <p>If this benchmark, dataset, or leaderboard supports your work, please cite the paper.</p>
             <div class="paper-meta">
