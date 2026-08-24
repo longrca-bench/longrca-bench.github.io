@@ -210,6 +210,7 @@ h1 em { color: #8ee6d4; font-weight: 500; }
 .section-heading { display: grid; grid-template-columns: 1fr minmax(310px, .72fr); gap: 56px; align-items: end; margin-bottom: 28px; }
 .section-index { margin-bottom: 8px; color: var(--teal); }
 .section-heading h2 { margin-bottom: 0; font: 500 clamp(2.2rem, 4vw, 3.6rem)/1.05 Georgia, serif; letter-spacing: -.04em; }
+.leaderboard-section .section-heading { grid-template-columns: 1fr; }
 .leaderboard-section .section-heading h2 { font-size: clamp(1.32rem, 3.5vw, 3.15rem); white-space: nowrap; }
 .section-heading > p { margin-bottom: 4px; color: var(--muted); font-size: .92rem; }
 
@@ -333,7 +334,8 @@ tbody tr.leader { background: linear-gradient(90deg, #eaf7f3, #fff); }
 .trajectory-table th { color: rgba(255,255,255,.48); background: rgba(255,255,255,.045); font-size: .58rem; letter-spacing: .07em; text-transform: uppercase; }
 .trajectory-table th, .trajectory-table td { padding: 13px 15px; border-bottom: 1px solid rgba(255,255,255,.085); text-align: left; vertical-align: top; white-space: normal; }
 .trajectory-table tbody tr:last-child td { border-bottom: 0; }
-.trajectory-table tbody tr:hover td { background: rgba(255,255,255,.025); }
+.trajectory-table tbody tr:hover { background: #142b49; }
+.trajectory-table tbody tr:hover td { color: #f4fbfa; background: #142b49; }
 .compact-table td:first-child { color: white; font-weight: 700; white-space: nowrap; }
 .phase-index { display: inline-block; min-width: 27px; margin-right: 7px; color: #7fe2cf; font: 750 .58rem/1 ui-monospace, monospace; }
 .trajectory-caption { margin: 12px 3px 0; color: rgba(255,255,255,.36); font-size: .61rem; }

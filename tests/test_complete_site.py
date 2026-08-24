@@ -90,6 +90,11 @@ class CompleteSiteTest(unittest.TestCase):
 
     def test_leaderboard_copy_is_concise(self) -> None:
         self.assertIn("LongRCA Bench Leaderboard", self.html)
+        self.assertNotIn(
+            "Ranked by exact error-step accuracy, with results broken out across all five source benchmarks.",
+            self.html,
+        )
+        self.assertNotIn("All displayed values are exact-step accuracy.", self.html)
         self.assertNotIn("Exact-step leaderboard", self.html)
         self.assertNotIn(
             "One shared public evaluation set and one DeepSeek-V4-Flash backbone.",
@@ -105,6 +110,12 @@ class CompleteSiteTest(unittest.TestCase):
         )
         self.assertIsNotNone(rule)
         self.assertIn("white-space: nowrap", rule.group(1))
+
+    def test_trajectory_table_hover_uses_an_opaque_dark_surface(self) -> None:
+        styles = (REPO_ROOT / "assets" / "styles.css").read_text(encoding="utf-8")
+        rule = re.search(r"\.trajectory-table tbody tr:hover\s*\{([^}]+)\}", styles)
+        self.assertIsNotNone(rule)
+        self.assertIn("background: #142b49", rule.group(1))
 
     def test_contribution_contract_is_visible(self) -> None:
         for token in (
