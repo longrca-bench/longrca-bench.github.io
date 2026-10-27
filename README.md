@@ -2,7 +2,7 @@
 
 The official static leaderboard for **LongRCA Bench: Diagnosing Responsible Roles and Root Causes in Long-Horizon Agent Failures**.
 
-- [Leaderboard](https://longrca-bench.github.io/)
+- [Official Project Website & Leaderboard](https://longrca-bench.github.io/)
 - [Paper](https://arxiv.org/abs/2608.15242)
 - [Dataset](https://huggingface.co/datasets/CLoud5-real/longrca-bench)
 - [Repository](https://github.com/longrca-bench/longrca-bench.github.io)
